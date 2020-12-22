@@ -1,0 +1,103 @@
+{% extends '_layout.html' %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-8 offset-md-2 col-sm-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span class="h2">{{mini.display_name}}</span>
+          <div class="btn-group">
+            <a href="/minis/{{mini.id}}/edit" class="btn btn-sm btn-warning">Edit</a>
+            <!-- <a class="btn btn-sm btn-danger">Delete</a> -->
+          </div>
+        </div>
+        <div class="card-body">
+
+          {% if mini.images|length > 0 %}
+            <div id="mini-images" class="bg-secondary mb-3 p-3 carousel slide" data-ride="carousel">
+              <ol class="carousel-indicators bg-primary">
+                {% for image in mini.images %}
+                  <li data-target="#mini-images" data-slide-to="{{loop.index0}}" class="{{ 'active' if loop.index0 == 0 else '' }}"></li>
+                {% endfor %}
+              </ol>
+              <div class="carousel-inner">
+                {% for image in mini.images %}
+                  <div class="carousel-item {{'active' if loop.index0 == 0 else ''}}">
+                    <img src="{{image.url}}" class="d-block w-100">
+                  </div>
+                {% endfor %}
+              </div>
+              <a class="carousel-control-prev" href="#mini-images" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              </a>
+              <a class="carousel-control-next" href="#mini-images" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              </a>
+            </div>
+          {% endif %}
+
+          <ul class="list-group">
+            <li class="list-group-item p-0">
+              <h2 class="h4 m-0 px-3 clickable pt-2 pb-2 bg-secondary text-dark" data-toggle="collapse" data-target="#details-section">DETAILS</h2>
+              <div id="details-section" class="collapse p-0">
+                <table class="table table-striped mb-0">
+                  <tr>
+                    <th>ID</th>
+                    <td>{{mini.id}}</td>
+                  </tr>
+                  <tr>
+                    <th>DATE</th>
+                    <td>{{mini.formatted_date}}</td>
+                  </tr>
+                  <tr>
+                    <th>FIGURE TYPE</th>
+                    <td>{{mini.figure_type}}</td>
+                  </tr>
+                  <tr>
+                    <th>NICKNAME</th>
+                    <td>{{mini.nickname}}</td>
+                  </tr>
+                </table>
+              </div>
+            </li>
+
+            {% if mini.colors|length > 0 %}
+              <li class="list-group-item p-0">
+                <h2 class="h4 m-0 px-3 clickable pt-2 pb-2 bg-secondary text-dark" data-toggle="collapse" data-target="#colors-section">COLORS</h2>
+                <div id="colors-section" class="collapse mt-3 px-3">
+                  {% for color in mini.colors %}
+                    <div class="media d-flex align-items-center mb-2">
+                      <div class="mr-3 color-swatch rounded-circle {{color.type.value}}" style="background-color:{{color.hex}};"></div>
+                      <div class="media-body d-flex flex-column">
+                        <span class="h5 text-bold m-0">{{color.display_name}}</span>
+                        <span class="text-muted">{{color.hex.upper()}}</span>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </li>
+            {% endif %}
+
+            {% if mini.description %}
+              <li class="list-group-item p-0">
+                <h2 class="h4 m-0 px-3 clickable pt-2 pb-2 bg-secondary text-dark" data-toggle="collapse" data-target="#description-section">DESCRIPTION</h2>
+                <div id="description-section" class="collapse p-3">
+                  <p class="m-0">{{mini.description}}</p>
+                </div>
+              </li>
+            {% endif %}
+
+            {% if mini.retro %}
+              <li class="list-group-item p-0">
+                <h2 class="h4 m-0 px-3 clickable pt-2 pb-2 bg-secondary text-dark" data-toggle="collapse" data-target="#retro-section">RETRO</h2>
+                <div id="retro-section" class="collapse p-3">
+                  <p class="m-0">{{mini.retro}}</p>
+                </div>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends '_layout.html' %}
+
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Colors</h1>
+    <a href="/colors/new/" class="btn btn-primary">Add New Color</a>
+  </div>
+  <ul class="nav nav-tabs mb-3" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#all" role="tab">All Colors</a>
+    </li>
+    {% for brand in color_groups %}
+      <li class="nav-item">
+        <a class="nav-link"data-toggle="tab" href="#colors-{{brand}}" role="tab">{{brand}}</a>
+      </li>
+    {% endfor %}
+  </ul>
+  <div class="tab-content">
+    <div id="all" class="tab-pane active">
+      {% for color in colors %}
+        <a class="card text-decoration-none mb-2" href="/colors/{{color.id}}/">
+          <div class="card-body p-1">
+            <div class="media d-flex align-items-center">
+              <div class="mr-3 color-swatch rounded-circle {{color.type.value}}" style="background-color:{{color.hex}};"></div>
+              <div class="media-body d-flex flex-column">
+                <span class="h5 text-bold m-0">{{color.display_name}}</span>
+                <span class="text-muted">{{color.hex.upper()}}</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+    {% for brand in color_groups %}
+      <div id="colors-{{brand}}" class="tab-pane">
+        {% for color in color_groups[brand] %}
+          <a class="card text-decoration-none mb-2" href="/colors/{{color.id}}/">
+            <div class="card-body p-1">
+              <div class="media d-flex align-items-center">
+                <div class="mr-3 color-swatch rounded-circle {{color.type.value}}" style="background-color:{{color.hex}};"></div>
+                <div class="media-body d-flex flex-column">
+                  <span class="h5 text-bold m-0">{{color.display_name}}</span>
+                  <span class="text-muted">{{color.hex.upper()}}</span>
+                </div>
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

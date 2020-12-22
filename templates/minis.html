@@ -1,0 +1,32 @@
+{% extends '_layout.html' %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>All Minis</h1>
+        <a href="/minis/new/" class="btn btn-primary">Add New Mini</a>
+      </div>
+        {% if minis|length == 0 %}
+          <div class="alert alert-primary">No Minis Available</div>
+        {% endif %}
+        {% for mini in minis%}
+          <a class="card text-decoration-none mb-2" href="/minis/{{mini.id}}/">
+            <div class="card-body p-1">
+              <div class="media d-flex align-items-center">
+                {% if mini.images|length %}
+                  <img alt="image thumbnail" class="img-responsive mr-3 rounded thumbnail" src="{{mini.images[0].url}}" data-holder-rendered="true">
+                {% else %}
+                  <div class="mr-3 rounded d-hidden thumbnail bg-primary"></div>
+                {% endif %}
+                <div class="media-body d-flex flex-column">
+                  <span class="h5 text-bold m-0">{{mini.display_name}}</span>
+                  <span class="text-muted">{{mini.formatted_date}}</span>
+                </div>
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+    </div>
+  </div>
+{% endblock %}

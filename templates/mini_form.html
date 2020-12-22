@@ -1,0 +1,122 @@
+{% extends '_layout.html' %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-8 offset-md-2 col-sm-12">
+      <form class="card mb-3" action="{{'/minis/'~mini.id~'/' if mini.id else '/minis/'}}" method="post" enctype="multipart/form-data">
+        <div class="card-header">
+          <h1 class="mb-0">{{mini.display_name or "New Mini"}}</h1>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <div id="image-previews" class="bg-secondary mb-3 {{ '' if (mini.id and (mini.images|length > 0)) else 'd-none' }} justify-content-center p-3 carousel slide" data-ride="carousel">
+              {% if mini.id %}
+                <ol class="carousel-indicators bg-primary">
+                  {% for image in mini.images %}
+                    <li data-target="#mini-images" data-slide-to="{{loop.index0}}" class="{{ 'active' if loop.index0 == 0 else '' }}"></li>
+                  {% endfor %}
+                </ol>
+                <div class="carousel-inner">
+                  {% for image in mini.images %}
+                    <div class="carousel-item {{'active' if loop.index0 == 0 else ''}}">
+                      <img src="{{image.url}}" class="d-block w-100">
+                    </div>
+                  {% endfor %}
+                </div>
+                <a class="carousel-control-prev" href="#mini-images" role="button" data-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </a>
+                <a class="carousel-control-next" href="#mini-images" role="button" data-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </a>
+              {% endif %}
+            </div>
+            <label for="images-input" class="btn btn-primary w-100">
+              {% if mini.images|length > 0 %}
+                Replace Images
+              {% else %}
+                Upload Images
+              {% endif %}
+            </label>
+            <input type="file" id="images-input" class="form-control d-none" name="images" multiple/>
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" class="form-control" name="date" value="{{mini.date}}"/>
+          </div>
+          <div class="form-group">
+            <label>Figure Type</label>
+            <input type="input" class="form-control" name="figure_type" value="{{mini.figure_type or ''}}"/>
+          </div>
+          <div class="form-group">
+            <label>Nickname</label>
+            <input type="input" class="form-control" name="nickname" value="{{mini.nickname or ''}}"/>
+          </div>
+          <div class="form-group">
+            <label>Colors</label>
+            <select class="form-control select2" name="colors" multiple>
+              {% for color in colors %}
+                <option value="{{color.id}}" {{'selected' if color.id in mini.color_ids else ''}}>{{color.brand}} {{color.name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Decription</label>
+            <textarea class="w-100" name="description" rows="6">{{mini.description or ''}}</textarea>
+          </div>
+          <div class="form-group">
+            <label>Retro</label>
+            <textarea class="w-100" name="retro" rows="6">{{mini.retro or ''}}</textarea>
+          </div>
+        </div>
+        <div class="card-footer">
+          <input type="submit" class="btn btn-primary" value="Save"/>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script>
+    $('#images-input').on('change', (event) => {
+      $('#image-previews').empty().removeClass('d-none').addClass('d-flex').append(`<div class="spinner-border text-primary"></div>`);
+
+      // I wanna see that spinner, dang it!
+      return new Promise(res => setTimeout(res, 3000)).then(() => {
+        const fileReadPromises = [];
+        for (let i = 0; i < event.target.files.length; i++){
+          const file = event.target.files[i];
+
+          fileReadPromises.push(new Promise((resolve, reject) => {
+            const reader = new FileReader();
+
+            reader.onload = (e) => resolve(e.target.result);
+            reader.readAsDataURL(file);
+          }));
+        }
+        return Promise.all(fileReadPromises).then((fileDataSet) => {
+          const $indicators = $('<ol class="carousel-indicators bg-primary"></ol>');
+          const $images = $('<div class="carousel-inner" role="listbox"></div>');
+
+          fileDataSet.forEach((dataUrl, i) => {
+            $indicators.append(`<li data-target="#image-previews" data-slide-to="${i}" ${!i ? 'class="active"' : ''}></li>`);
+            $images.append(`
+              <div class="carousel-item item ${!i ? 'active' : ''}">
+                <img src="${dataUrl}" class="d-block w-100">
+              </div>
+            `);
+
+          });
+
+          $('#image-previews').empty().append($indicators).append($images).append(`
+            <a class="carousel-control-prev" href="#image-previews" role="button" data-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            </a>
+            <a class="carousel-control-next" href="#image-previews" role="button" data-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            </a>
+          `);
+
+        });
+      });
+    });
+  </script>
+{% endblock %}

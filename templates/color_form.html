@@ -1,0 +1,44 @@
+{% extends '_layout.html' %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-8 offset-md-2 col-sm-12">
+      <form class="card" action="/colors/" method="post">
+        <div class="card-header">
+          <h1>New Color</h1>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Brand</label>
+            <input type="text" class="form-control" name="brand" value="{{color.brand}}"/>
+          </div>
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" class="form-control" name="name" value="{{color.name}}"/>
+          </div>
+          <div class="form-group">
+            <label>Color</label>
+            <input type="color" class="form-control" name="hex"  value="{{color.hex}}"/>
+          </div>
+          <div class="form-group">
+            <label>Type</label>
+            <select class="form-control" name="type">
+
+              {% for type in ColorTypes %}
+                <option
+                value="{{type.value}}"
+                selected="{{color.type == type.value}}"
+                >
+                  {{type.value.capitalize()}}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="card-footer">
+          <input type="submit" class="btn btn-primary" value="Save"/>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

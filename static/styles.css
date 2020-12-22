@@ -1,0 +1,21 @@
+img {
+  max-width: 100%;
+}
+.color-swatch, .thumbnail {
+  height: 2.5rem;
+  width: 2.5rem;
+  border: 1px solid rgba( 0, 0, 0, 0.3);
+}
+.color-swatch.base {
+  background: radial-gradient(rgba(200,200,200,0.2), rgba(0, 0, 0, 0.3));
+}
+.color-swatch.wash {
+  background: linear-gradient(to bottom, rgba(200,200,200,0.2) 0%, rgba(0, 0, 0, 0.35) 70%);
+}
+.color-swatch.technical {
+  /* https://www.transparenttextures.com/ */
+  background-image: url("technical.png");
+}
+.clickable {
+  cursor: pointer;
+}
