@@ -104,7 +104,7 @@ class Image(Base, MagicModel):
     @property
     def url(self):
         if os.environ['FLASK_ENV'] == 'development':
-            return f"/static/minis/{self.mini.id}/images/{self.key}.jpg"
+            return "/static/minis/"+str(self.mini.id)+"/images/{self.key}.jpg"
         else:
             pass # TODO: Use S3 for storage for-realsies
 

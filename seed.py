@@ -53,4 +53,4 @@ for color in colors:
         session.add(new_color)
         session.commit()
         created_colors += 1
-print(f"Created {created_colors} new colors.")
+print("Created "+str(created_colors)+" new colors.")

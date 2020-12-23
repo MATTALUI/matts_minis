@@ -36,7 +36,7 @@ def reset_mini_images(mini):
     for image in mini.images:
         session.delete(image)
     if os.environ['FLASK_ENV'] == 'development':
-        target_dir = os.path.join(app.root_path, f"static/minis/{mini.id}/images")
+        target_dir = os.path.join(app.root_path, "static/minis/"+str(mini.id)+"/images")
         try:
             shutil.rmtree(target_dir) # could throw if new mini; doesn't have images saved yet
         except:
@@ -48,9 +48,9 @@ def reset_mini_images(mini):
         key=str(uuid.uuid4())
         image = Image(mini_id=mini.id, key=key)
         if os.environ['FLASK_ENV'] == 'development':
-            target_dir = os.path.join(app.root_path, f"static/minis/{mini.id}/images")
+            target_dir = os.path.join(app.root_path, "static/minis/"+str(mini.id)+"/images")
             os.makedirs(target_dir, exist_ok=True)
-            uploaded_image.save(os.path.join(target_dir, f"{key}.jpg"))
+            uploaded_image.save(os.path.join(target_dir, key+".jpg"))
         else:
             pass # TODO: Use S3 for storage for-realsies
         session.add(image)
