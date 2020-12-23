@@ -23,7 +23,7 @@ try:
     os.environ['FLASK_ENV']
     os.environ['FLASK_RUN_PORT']
 except KeyError:
-    raise Exception('\n\nYou seem to be missing required ENV variables.Be sure to run "source ./env.sh"')
+    raise Exception('\n\nYou seem to be missing required ENV variables. Be sure to start the app using "./start.sh"')
 
 # @app.before_request
 # def check_session():
