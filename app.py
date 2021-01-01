@@ -1,6 +1,8 @@
 import uuid
 import os
 import shutil
+from datetime import datetime
+import colorsys
 from flask import (
     Flask,
     render_template,
@@ -8,7 +10,6 @@ from flask import (
     url_for,
     request
 )
-
 from models import (
     session,
     Mini,
@@ -31,6 +32,13 @@ except KeyError:
 #     print('checking session')
 #     print('======================')
 
+def has_valid_images():
+    # NOTE: If the images input is left empty, we still get a single
+    # file upload with an empty stream as the type. We need to ignore
+    # the data if that's the case.
+    has_multiple = len(request.files.getlist('images')) > 1
+    has_single_real = len(request.files.getlist('images')) == 1 and request.files.getlist('images')[0].mimetype != 'application/octet-stream'
+    return has_multiple or has_single_real
 def reset_mini_images(mini):
     # Get rid of old images
     for image in mini.images:
@@ -44,6 +52,8 @@ def reset_mini_images(mini):
     else:
         pass # TODO: Use S3 for storage for-realsies
     # Save new ones
+    if not has_valid_images():
+        return
     for uploaded_image in request.files.getlist('images'):
         key=str(uuid.uuid4())
         image = Image(mini_id=mini.id, key=key)
@@ -75,8 +85,15 @@ def index():
 # MINIS ROUTES
 ##############################################################################
 def mini_params():
+    date = request.form["date"]
+    format = "%Y-%m-%d"
+    date_value = None
+    try:
+        date_value = datetime.strptime(date, format)
+    except ValueError:
+        date_value = None
     return {
-        "date": request.form["date"],
+        "date": date_value,
         "figure_type": request.form["figure_type"],
         "nickname": request.form["nickname"],
         "description": request.form["description"],
@@ -108,8 +125,7 @@ def minis_update(mini_id=None):
     session.add(mini)
     session.commit()
     reset_mini_colors(mini)
-    print(len(request.form.getlist('images')))
-    if len(request.form.getlist('images')):
+    if has_valid_images():
         reset_mini_images(mini)
     return redirect(url_for('minis_show', mini_id=mini.id))
 @app.route('/minis/<int:mini_id>/edit/', methods=['GET'])
@@ -123,10 +139,16 @@ def minis_edit(mini_id=None):
 ##############################################################################
 # COLORS ROUTES
 ##############################################################################
+def get_hsv(hexrgb):
+    hexrgb = hexrgb.lstrip("#")   # in case you have Web color specs
+    r, g, b = (int(hexrgb[i:i+2], 16) / 255.0 for i in range(0,5,2))
+    return colorsys.rgb_to_hsv(r, g, b)
+
 @app.route('/colors/', methods=['GET'])
 def colors_index():
     colors = Color.objects().all()
     colors.sort(key=lambda c: c.display_name)
+    # colors.sort(key=lambda c: get_hsv(c.hex))
     color_groups = {}
     for color in colors:
         if color.brand in color_groups:

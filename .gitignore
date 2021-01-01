@@ -2,3 +2,4 @@ minis.db
 __pycache__
 static/minis/*
 *.pyc
+reset.sh
