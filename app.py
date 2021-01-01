@@ -101,7 +101,7 @@ def mini_params():
     }
 @app.route('/minis/', methods=['GET'])
 def minis_index():
-    return render_template('minis.html', minis=Mini.objects().all())
+    return render_template('minis.html', minis=Mini.objects().order_by(Mini.date.desc()).all())
 @app.route('/minis/', methods=['POST'])
 def minis_create():
     mini = Mini(**mini_params())
@@ -117,7 +117,13 @@ def minis_new():
     )
 @app.route('/minis/<int:mini_id>/', methods=['GET'])
 def minis_show(mini_id=None):
-    return render_template('mini.html', mini=Mini.objects().get(mini_id))
+    mini = Mini.objects().get(mini_id)
+    next_mini = None
+    previous_mini = None
+    if mini.date is not None:
+        next_mini = Mini.objects().filter(Mini.date > mini.date).order_by(Mini.date.asc()).first()
+        previous_mini = Mini.objects().filter(Mini.date < mini.date).order_by(Mini.date.desc()).first()
+    return render_template('mini.html', mini=mini, next_mini=next_mini, previous_mini=previous_mini)
 @app.route('/minis/<int:mini_id>/', methods=['POST'])
 def minis_update(mini_id=None):
     mini = Mini.objects().get(mini_id)

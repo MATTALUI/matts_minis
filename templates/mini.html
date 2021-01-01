@@ -1,7 +1,7 @@
 {% extends '_layout.html' %}
 
 {% block content %}
-  <div class="row">
+  <div class="row mb-3">
     <div class="col-md-8 offset-md-2 col-sm-12">
       <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -96,6 +96,18 @@
               </li>
             {% endif %}
           </ul>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+          <div>
+            {% if previous_mini is not none %}
+              <a class="btn btn-primary" href="/minis/{{previous_mini.id}}/">Previous</a>
+            {% endif %}
+          </div>
+          <div>
+            {% if next_mini is not none %}
+              <a class="btn btn-primary" href="/minis/{{next_mini.id}}/">Next</a>
+            {% endif %}
+          </div>
         </div>
       </div>
     </div>

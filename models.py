@@ -60,6 +60,8 @@ class Mini(Base, MagicModel):
         self.nickname = nickname
         self.description = description
         self.retro = retro
+    def __repr__(self):
+        return "<Mini(" + str(self.id) + ")>"
     @property
     def display_name(self):
         return self.nickname or self.figure_type
